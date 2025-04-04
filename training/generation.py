@@ -1,3 +1,6 @@
+import torch
+from analysis import monosemantic_analysis_for_token
+
 ################################################################################
 # 7. Single code path for text generation
 ################################################################################

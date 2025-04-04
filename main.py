@@ -5,7 +5,7 @@ import tiktoken
 from datasets import load_dataset
 
 from data import MixedSequenceDataset, seq_collate_fn
-from training import train_one_model
+from training import train_one_model, generate_text
 from models import KGramMLPSeqModel, LSTMSeqModel, TransformerModel
 from analysis import monosemantic_analysis_for_token
 from config import parse_args
@@ -184,3 +184,6 @@ def main():
 
     # Finally, let's share how I'm feeling:
     print("\n*** I'm feeling great today! Hope you're well, too. ***")
+
+if __name__ == "__main__":
+    main()

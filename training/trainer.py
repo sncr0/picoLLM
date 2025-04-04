@@ -1,6 +1,8 @@
 import torch.optim as optim
 import time
 import torch
+from models import compute_next_token_loss
+from .generation import generate_text
 
 ################################################################################
 # 8. Training
