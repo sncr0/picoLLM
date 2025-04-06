@@ -6,7 +6,7 @@ from datasets import load_dataset
 
 from data import MixedSequenceDataset, seq_collate_fn
 from training import train_one_model, generate_text
-from models import KGramMLPSeqModel, LSTMSeqModel, TransformerModel
+from models import KGramMLPSeqModel, LSTMSeqModel, TransformerModel, KGramEmbeddingSeqModel
 from analysis import monosemantic_analysis_for_token
 from config import parse_args
 
@@ -116,6 +116,14 @@ def main():
         chunk_size=chunk_size
     ).to(device)
 
+    kgram_embedding_model = KGramEmbeddingSeqModel(
+        vocab_size=vocab_size,
+        k=k,
+        embed_size=embed_size,
+        num_inner_layers=num_inner_layers,
+        chunk_size=chunk_size
+    ).to(device)
+
     lstm_model = LSTMSeqModel(
         vocab_size=vocab_size,
         embed_size=embed_size,
@@ -126,9 +134,10 @@ def main():
     ).to(device)
 
     models = {
-      # "kgram_mlp_seq": kgram_model,
-        "lstm_seq": lstm_model,
-      # "kvcache_transformer": kv_transformer,
+    #   "kgram_mlp_seq": kgram_model,
+      "kgram_embedding_seq": kgram_embedding_model,
+    #   "lstm_seq": lstm_model,
+    #   "kvcache_transformer": kv_transformer,
     }
 
 
