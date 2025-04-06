@@ -23,7 +23,7 @@ def main():
 
     embed_size = args.embed_size
     batch_size = 16
-    num_epochs = 3
+    num_epochs = 30
     learning_rate = 1e-3
 
     block_size = args.block_size
@@ -219,5 +219,5 @@ def test_nucleus_sampling():
     
 
 if __name__ == "__main__":
-    test_nucleus_sampling()
-    #main()
+    #test_nucleus_sampling()
+    main()
