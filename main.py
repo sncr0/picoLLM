@@ -133,7 +133,7 @@ def main():
     transformer = TransformerModel(
         vocab_size=vocab_size,
         d_model=embed_size,
-        use_mla = False
+        use_mla = True
     ).to(device)
 
     models = {
