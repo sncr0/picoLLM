@@ -131,13 +131,16 @@ def main():
     ).to(device)
 
     transformer = TransformerModel(
+        vocab_size=vocab_size,
+        d_model=embed_size,
+        use_mla = False
     ).to(device)
 
     models = {
     #   "kgram_mlp_seq": kgram_model,
-      "kgram_embedding_seq": kgram_embedding_model,
+    #   "kgram_embedding_seq": kgram_embedding_model,
     #   "lstm_seq": lstm_model,
-    #   "kvcache_transformer": kv_transformer,
+      "kvcache_transformer": transformer,
     }
 
 
