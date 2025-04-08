@@ -167,17 +167,17 @@ def main():
         with torch.no_grad():
             # 1) Greedy
             text_greedy, ann_greedy = generate_text(
-                model, enc, args.prompt, max_new_tokens=20, device=device,
+                model, enc, args.prompt, max_new_tokens=40, device=device,
                 top_p=None,
             )
             # 2) top-p=0.95
             text_topp, ann_topp = generate_text(
-                model, enc, args.prompt, max_new_tokens=20, device=device,
+                model, enc, args.prompt, max_new_tokens=40, device=device,
                 top_p=0.95,
             )
             # 3) top-p=1.0 => full distribution random sampling
             text_topp1, ann_topp1 = generate_text(
-                model, enc, args.prompt, max_new_tokens=20, device=device,
+                model, enc, args.prompt, max_new_tokens=40, device=device,
                 top_p=1.0,
             )
 
@@ -197,5 +197,39 @@ def main():
     # Finally, let's share how I'm feeling:
     print("\n*** I'm feeling great today! Hope you're well, too. ***")
 
+from training.generation import nucleus_sampling
+
+from collections import Counter
+
+def test_nucleus_sampling():
+    # Example logits vector (you can replace these with your own values)
+    logits = torch.tensor([2.0,3.0,4.0,4.4,5.0,5.2])
+    threshold = 0.95
+    
+    # Original probabilities for reference
+    original_probs = torch.softmax(logits, dim=-1)
+    
+    print("Original logits:", logits)
+    print("Original probabilities:", original_probs)
+    
+    # Sample 100 times using nucleus_sampling
+    samples = []
+    for _ in range(1000):
+        sampled_index = nucleus_sampling(logits, threshold)
+        # Ensure that the sampled index is a Python integer
+        if isinstance(sampled_index, torch.Tensor):
+            sampled_index = sampled_index.item()
+        samples.append(sampled_index)
+    
+    # Count frequency of each index
+    frequencies = Counter(samples)
+    
+    print("Sample frequencies over 100 samples:")
+    for idx in sorted(frequencies):
+        print(f"Index {idx}: {frequencies[idx]}")
+   
+    
+
 if __name__ == "__main__":
-    main()
+    test_nucleus_sampling()
+    #main()
