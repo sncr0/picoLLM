@@ -23,7 +23,7 @@ def main():
 
     embed_size = args.embed_size
     batch_size = 16
-    num_epochs = 50
+    num_epochs = 30
     learning_rate = 1e-3
 
     block_size = args.block_size
@@ -179,7 +179,7 @@ def main():
             # 3) top-p=1.0 => full distribution random sampling
             text_topp1, ann_topp1 = generate_text(
                 model, enc, args.prompt, max_new_tokens=40, device=device,
-                top_p=1,
+                top_p=1.0,
             )
 
         print(f"[{model_name}] Final sample (greedy) from prompt: '{args.prompt}'")
