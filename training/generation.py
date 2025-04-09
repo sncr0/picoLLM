@@ -8,13 +8,12 @@ from analysis import monosemantic_analysis_for_token
 def nucleus_sampling(logits, p=0.95):
     probs = torch.softmax(logits, dim=-1)
     if p == 1.0:
-        return torch.argmax(probs).item()
+        return torch.multinomial(probs.float(), num_samples=1)
     sorted_probs, sorted_indices = torch.sort(probs, descending=True)
     cumulative_probs = torch.cumsum(sorted_probs, dim=-1)
     threshold = p
     #print(cumulative_probs)
     selected = (cumulative_probs >= threshold).nonzero(as_tuple=True)
-
     transition_index = selected[0][0] #find the point that the cum_probs first exceed 0.95
     #print(selected[0].shape, transition_index)
     excess = cumulative_probs[transition_index] -p
