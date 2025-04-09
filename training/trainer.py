@@ -3,7 +3,6 @@ import time
 import torch
 from models import compute_next_token_loss
 from .generation import generate_text
-
 ################################################################################
 # 8. Training
 ################################################################################
@@ -13,6 +12,7 @@ def train_one_model(model,
                     epochs,
                     model_name,
                     device,
+                    test_loader=None,
                     lr=1e-3,
                     log_steps=100,
                     sample_interval=30,
@@ -24,6 +24,9 @@ def train_one_model(model,
     We add `prompt` as an explicit argument so we can pass it down from main().
     """
     optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    train_losses = []
+    test_losses = []
 
     start_time = time.time()
     next_sample_time = start_time
@@ -101,5 +104,30 @@ def train_one_model(model,
                 print(f"[{model_name}] Reached max_steps_per_epoch={max_steps_per_epoch}, ending epoch {epoch} early.")
                 break
 
-        avg_loss = total_loss / step_in_epoch
-        print(f"[{model_name}] *** End of Epoch {epoch} *** Avg Loss: {avg_loss:.4f}")
+        train_loss = total_loss / step_in_epoch
+        train_losses.append(train_loss)
+
+        if test_loader:
+            model.eval()
+            total_test_loss = 0.0
+            test_steps = 0
+
+            with torch.no_grad():
+                for test_batch in test_loader:
+                    test_batch = test_batch.to(device)
+                    test_logits = model(test_batch)
+                    test_loss_val = compute_next_token_loss(test_logits, test_batch)
+                    total_test_loss += test_loss_val.item()
+                    test_steps += 1
+            
+            test_loss = total_test_loss / test_steps
+            test_losses.append(test_loss)
+
+            print(f"\n[{model_name}] Epoch {epoch} Summary:")
+            print(f"Train Loss: {train_loss:.4f}")
+            print(f"Test Loss: {test_loss:.4f}")
+            print(f"Overfitting Gap: {test_loss - train_loss:.4f}\n")
+        else:
+            print(f"[{model_name}] *** End of Epoch {epoch} *** Avg Loss: {train_loss:.4f}")
+
+    return train_losses, test_losses if test_loader else train_losses

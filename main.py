@@ -1,10 +1,9 @@
 import argparse
 import random
 import torch
-import tiktoken
-from datasets import load_dataset
+import matplotlib.pyplot as plt
 
-from data import MixedSequenceDataset, seq_collate_fn
+from data import load_and_prepare_data, seq_collate_fn
 from training import train_one_model, generate_text
 from models import KGramMLPSeqModel, LSTMSeqModel, TransformerModel, KGramEmbeddingSeqModel
 from analysis import monosemantic_analysis_for_token
@@ -47,54 +46,10 @@ def main():
     ############################################################################
     # Data
     ############################################################################
-    tinystories_seqs = []
-    other_seqs = []
-
-    if args.tinystories_weight > 0.0:
-        print(f"Loading TinyStories from huggingface with weight={args.tinystories_weight}...")
-        dataset = load_dataset("roneneldan/TinyStories", split="train")
-        dataset = dataset.select(range(train_subset_size))
-    else:
-        print("TinyStories weight=0 => skipping TinyStories.")
-        dataset = None
-
-    enc = tiktoken.get_encoding("gpt2")
-    vocab_size = enc.n_vocab
-    print(f"Vocab size: {vocab_size}")
-
-    if dataset is not None:
-        for sample in dataset:
-            text = sample['text']
-            tokens = enc.encode(text)
-            tokens = tokens[:block_size]
-            if len(tokens) > 0:
-                tinystories_seqs.append(tokens)
-        print(f"TinyStories sequences: {len(tinystories_seqs)}")
-
-    if args.input_files:
-        for filepath in args.input_files:
-            print(f"Reading custom text file: {filepath}")
-            with open(filepath, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            for line in lines:
-                line = line.strip()
-                if not line:
-                    continue
-                tokens = enc.encode(line)
-                tokens = tokens[:block_size]
-                if len(tokens) > 0:
-                    other_seqs.append(tokens)
-        print(f"Custom input files: {len(other_seqs)} sequences loaded.")
-    else:
-        print("No custom input files provided.")
-
-    p_tiny = args.tinystories_weight
-    if len(tinystories_seqs) == 0 and p_tiny>0:
-        print("Warning: TinyStories is empty but tinystories_weight>0. That's okay, no data from it.")
-    combined_dataset = MixedSequenceDataset(
-        tinystories_seqs=tinystories_seqs,
-        other_seqs=other_seqs,
-        p_tiny=p_tiny
+    combined_dataset, enc, vocab_size = load_and_prepare_data(
+        args=args,
+        block_size=block_size,
+        train_subset_size=train_subset_size
     )
 
     train_loader = torch.utils.data.DataLoader(
@@ -229,8 +184,190 @@ def test_nucleus_sampling():
     for idx in sorted(frequencies):
         print(f"Index {idx}: {frequencies[idx]}")
    
+def test_overfitting_study():
+    args = parse_args()
     
+    # Model configurations to test
+    configs = [
+        {
+            'name': 'tiny_transformer',
+            'd_model': 256,
+            'n_heads': 4,
+            'n_blocks': 3,
+            'use_mla': True,
+            'use_swiglu': True
+        },
+        {
+            'name': 'medium_transformer',
+            'd_model': 512,
+            'n_heads': 8,
+            'n_blocks': 6,
+            'use_mla': True,
+            'use_swiglu': True
+        },
+        {
+            'name': 'large_transformer',
+            'd_model': 1024,
+            'n_heads': 8,
+            'n_blocks': 6,
+            'use_mla': False,
+            'use_swiglu': True
+        }
+    ]
+    
+    # Training parameters
+    batch_size = 16
+    num_epochs = 30
+    block_size = args.block_size
+    train_subset_size = 20000
+    
+    # Device setup
+    device = torch.device(args.device_id if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+    
+    # Load data using the common function
+    combined_dataset, enc, vocab_size = load_and_prepare_data(
+        args=args,
+        block_size=block_size,
+        train_subset_size=train_subset_size
+    )
+    
+    # Split into train/test
+    train_dataset, test_dataset = combined_dataset.split(test_ratio=0.2)
+    
+    # Create dataloaders
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=0,
+        collate_fn=seq_collate_fn
+    )
+    
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=0,
+        collate_fn=seq_collate_fn
+    )
+
+    results = []
+    all_losses = {}
+    generated_texts = {}
+    for config in configs:
+        print(f"\n=== Testing {config['name']} ===")
+        
+        # Create model
+        model = TransformerModel(
+            vocab_size=vocab_size,
+            d_model=config['d_model'],
+            n_heads=config['n_heads'],
+            n_blocks=config['n_blocks'],
+            use_mla=config['use_mla'],
+            use_swiglu=config['use_swiglu']
+        ).to(device)
+        
+        # Train with validation
+        train_losses, test_losses = train_one_model(
+            model=model,
+            loader=train_loader,
+            test_loader=test_loader,
+            epochs=num_epochs,
+            model_name=config['name'],
+            device=device,
+            lr=1e-3,
+            log_steps=100,
+            sample_interval=30,
+            max_steps_per_epoch=args.max_steps_per_epoch,
+            enc=enc,
+            prompt=args.prompt
+        )
+
+        all_losses[config['name']] = {
+            'train': train_losses,
+            'test': test_losses
+        }
+        
+        # Generate text samples with different sampling strategies
+        model.eval()
+        generated_samples = []
+        with torch.no_grad():
+            for top_p, strategy_name in [(0.95, "nucleus")]:
+            # for top_p, strategy_name in [(None, "greedy"), (0.95, "nucleus"), (1.0, "random")]:
+                text, ann = generate_text(
+                    model, enc, args.prompt, max_new_tokens=40, device=device,
+                    top_p=top_p
+                )
+                generated_samples.append({
+                    'strategy': strategy_name,
+                    'text': text,
+                    'annotated': ann
+                })
+        
+        generated_texts[config['name']] = generated_samples
+        
+        # Store results
+        results.append({
+            'config': config,
+            'final_train_loss': train_losses[-1],
+            'final_test_loss': test_losses[-1],
+            'overfitting_gap': test_losses[-1] - train_losses[-1]
+        })
+    
+    # Print summary of results
+    print("\n=== Overfitting Study Results ===")
+    print("\nModel Configurations and Their Performance:")
+    for result in results:
+        config = result['config']
+        print(f"\nModel: {config['name']}")
+        print(f"Architecture: {config['d_model']} dims, {config['n_heads']} heads, {config['n_blocks']} blocks")
+        print(f"Final Train Loss: {result['final_train_loss']:.4f}")
+        print(f"Final Test Loss: {result['final_test_loss']:.4f}")
+        print(f"Overfitting Gap: {result['overfitting_gap']:.4f}")
+
+        for sample in generated_texts[config['name']]:
+            print(f"{sample['strategy']} annotated sampling: {sample['annotated']}")
+        print("\n" + "="*80)
+
+    try:        
+        plt.style.use('ggplot')
+        
+        # Create a figure with subplots (one for each model)
+        num_models = len(all_losses)
+        fig, axes = plt.subplots(1, num_models, figsize=(6.5*num_models, 6))
+        
+        # Colors for consistency
+        train_color = '#2E86C1'  # Blue for training
+        test_color = '#E74C3C'   # Red for testing
+        
+        # Plot each model's results
+        for idx, (model_name, losses) in enumerate(all_losses.items()):
+            # Get model config for title
+            model_config = next(result['config'] for result in results if result['config']['name'] == model_name)
+            
+            # Create subplot title with model details
+            title = f"{model_name}\n({model_config['d_model']}d, {model_config['n_heads']} heads, {model_config['n_blocks']} blocks)"
+            
+            # Plot train and test losses
+            axes[idx].plot(losses['train'], label='Train', color=train_color)
+            axes[idx].plot(losses['test'], label='Test', color=test_color)
+            axes[idx].set_title(title, fontsize=12)
+            axes[idx].set_xlabel('Epoch')
+            axes[idx].set_ylabel('Loss')
+            axes[idx].legend()
+            axes[idx].grid(True)
+        
+        # Add overall title and show
+        plt.suptitle('Training vs Testing Loss for Different Model Sizes', fontsize=14)
+        plt.tight_layout()
+        plt.show()
+        
+    except ImportError:
+        print("matplotlib not available - skipping loss curve plotting")
+
 
 if __name__ == "__main__":
     #test_nucleus_sampling()
+    # test_overfitting_study()
     main()
