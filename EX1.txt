@@ -1,0 +1,50 @@
+Large language models use deep learning to understand and generate human language, enabling applications like chatbots, translators, and content creation tools across multiple domains and industries.
+Transformers are the backbone of modern large language models, using attention mechanisms to model relationships between words and improve performance on tasks like summarization, classification, and question answering.
+Unlike traditional rule-based systems, LLMs learn patterns from vast text corpora, making them adaptable and powerful for tasks like writing, code generation, and even mathematical reasoning.
+Tokenization is a crucial preprocessing step in training LLMs, breaking text into smaller units like words or subwords to represent input data as numerical vectors for neural network models.
+The attention mechanism allows transformers to selectively focus on different parts of a sentence, helping models understand context and meaning more effectively in large language models.
+Fine-tuning adapts a pre-trained large language model to a specific domain or task, improving accuracy and relevance in applications such as medical diagnosis or legal document analysis.
+Pretraining involves feeding the LLM massive unlabeled text data, letting it learn grammar, facts, and reasoning patterns through self-supervised learning, before applying it to downstream tasks.
+GPT-style models use a decoder-only transformer architecture, generating text one token at a time while conditioning on previous tokens, making them well-suited for creative and conversational applications.
+Language models like GPT-3 and LLaMA are trained on trillions of tokens, using hundreds of billions of parameters to capture complex relationships in language and generate coherent, contextual responses.
+Positional embeddings provide information about word order in sequences, allowing transformer-based LLMs to capture the relative positions of tokens despite the model's lack of inherent sequential structure.
+Training a large language model requires significant computational resources, including high-end GPUs or TPUs, distributed systems, and massive datasets to achieve high-quality language understanding.
+Zero-shot learning enables LLMs to perform tasks without any fine-tuning, by conditioning the model with a carefully crafted prompt that explains what task needs to be done.
+Few-shot learning provides LLMs with a handful of examples within the prompt, helping the model generalize and adapt to tasks without full retraining or large-scale labeled datasets.
+Chain-of-thought prompting helps LLMs reason better by encouraging them to explain their thinking step-by-step, improving performance on arithmetic, logic, and commonsense reasoning tasks.
+Instruction-tuned models are trained to follow commands more accurately by fine-tuning on datasets that pair instructions with ideal outputs, making them useful for AI assistants and productivity tools.
+LLMs can hallucinate facts when generating text, confidently stating incorrect information, which poses risks in critical domains like healthcare, legal advice, and scientific analysis.
+Model alignment ensures that the outputs of an LLM match human intentions and values, often through techniques like Reinforcement Learning from Human Feedback (RLHF).
+LLMs are sensitive to prompt phrasing, where small changes in wording can significantly affect the generated output, a phenomenon that motivates the study of prompt engineering.
+Open-source LLMs like Mistral, LLaMA, and Falcon provide accessible alternatives to proprietary models, enabling broader research, experimentation, and community-driven innovation in natural language processing.
+LLMs struggle with real-time updating of knowledge, since their training data is static and their weights cannot be changed easily without retraining on new information.
+Long-context models extend the token window to tens or hundreds of thousands, allowing LLMs to analyze books, codebases, or multi-document reports without losing track of earlier information.
+Safety and bias are ongoing concerns with LLMs, since they can reproduce or amplify harmful stereotypes, misinformation, or toxic language found in the data they are trained on.
+Scaling laws suggest that LLM performance improves predictably with more data, model size, and compute, guiding researchers in building ever-larger and more capable language models.
+Compression techniques like quantization and pruning reduce model size while retaining performance, enabling LLMs to run on edge devices like smartphones or personal computers.
+Retrieval-Augmented Generation (RAG) combines LLMs with search engines or knowledge bases, enabling more factual and grounded responses in tasks like document answering or chatbots.
+Evaluation of LLMs often involves benchmark tasks like MMLU, BIG-Bench, or HellaSwag, testing general knowledge, reasoning, and language understanding across diverse subjects and difficulty levels.
+While LLMs can generate convincing answers, they lack real understanding or consciousness, as they are fundamentally statistical models that predict token sequences based on training data.
+Self-supervised learning enables LLMs to train on vast unlabeled datasets by predicting missing tokens, which reduces reliance on expensive and time-consuming human annotations.
+Autoregressive decoding means the model generates one token at a time, feeding its own previous outputs back into the model to continue generating the rest of the sequence.
+Gradient descent optimizes LLM weights by minimizing the prediction error over millions of training steps, gradually improving the model’s ability to generate fluent and accurate text.
+Transformers use multi-head attention, allowing the model to focus on different parts of the input in parallel, improving representation and learning richer contextual embeddings.
+Larger context windows allow LLMs to retain memory over longer conversations or documents, which improves coherence and consistency in applications like long-form writing or coding.
+LLMs can be finetuned on dialogue datasets to act like assistants, answering questions, offering suggestions, or holding conversations in a more natural and helpful way.
+Token sampling strategies like top-k, top-p, temperature, and repetition penalty shape how creative or deterministic the model’s outputs are, balancing diversity and reliability.
+Datasets like Common Crawl, Wikipedia, Books, and GitHub form the backbone of LLM training, providing diverse, rich, and high-quality text for the model to learn language patterns.
+Model interpretability is challenging in LLMs, as it’s often hard to trace why a certain prediction was made, prompting research into understanding attention heads and neuron behavior.
+LLMs can perform in-context learning, adapting to new tasks without changing weights, simply by being given instructions and examples in the input prompt.
+Transformer models are non-recurrent, enabling faster parallel training and inference compared to RNNs or LSTMs, which process tokens sequentially.
+Self-attention computes token interactions using query, key, and value projections, helping the model attend to relevant parts of the input for better contextual understanding.
+Checkpoints during training allow recovery after failures and can be used to study how performance improves over time, offering insights into learning dynamics of LLMs.
+LLMs need vocabulary tokenizers like BPE or SentencePiece to map words and subwords into token IDs before embedding and training begins.
+Scaling models too aggressively without proper data or alignment techniques can lead to unsafe, brittle, or unpredictable outputs, especially in open-ended generation.
+Embedding layers in LLMs map discrete tokens to continuous vector spaces, which the rest of the neural network can then process and transform to generate output.
+Model latency and inference speed are important deployment concerns, especially for interactive applications like real-time chatbots or voice assistants
+Long-sequence modeling enables better handling of structured documents, books, or multi-turn dialogues, but also increases the need for memory-efficient transformer architectures.
+LLMs can assist in educational settings by summarizing readings, generating quizzes, or tutoring in natural language, though accuracy and bias remain key concerns.
+Model checkpoints and saved weights allow fine-tuning on new tasks without retraining from scratch, which saves time, compute, and money.
+Prompt chaining lets LLMs break a complex task into smaller steps, improving accuracy and allowing more control over intermediate outputs during generation.
+Finetuned LLMs for code generation like Codex or CodeLlama specialize in programming tasks, offering context-aware completions, explanations, and bug fixes.
+The development of open-weight LLMs supports transparency, collaboration, and reproducibility, fostering innovation in research and equitable access to powerful AI tools.
