@@ -46,3 +46,41 @@ class MixedSequenceDataset(torch.utils.data.Dataset):
             seq = self.other_seqs[i]
 
         return torch.tensor(seq, dtype=torch.long)
+    
+    def split(self, test_ratio: float = 0.2):
+        """
+        Split this dataset into train and test sets while maintaining the same mixing ratio
+        
+        Args:
+            test_ratio: Fraction of data to use for testing
+            
+        Returns:
+            train_dataset, test_dataset: Two MixedSequenceDataset objects
+        """
+        # Split TinyStories sequences
+        tiny_train = []
+        tiny_test = []
+        if self.has_tinystories:
+            indices = list(range(len(self.tinystories_seqs)))
+            random.shuffle(indices)
+            split_idx = int(len(indices) * (1 - test_ratio))
+            
+            tiny_train = [self.tinystories_seqs[i] for i in indices[:split_idx]]
+            tiny_test = [self.tinystories_seqs[i] for i in indices[split_idx:]]
+        
+        # Split other sequences
+        other_train = []
+        other_test = []
+        if self.has_other:
+            indices = list(range(len(self.other_seqs)))
+            random.shuffle(indices)
+            split_idx = int(len(indices) * (1 - test_ratio))
+            
+            other_train = [self.other_seqs[i] for i in indices[:split_idx]]
+            other_test = [self.other_seqs[i] for i in indices[split_idx:]]
+        
+        # Create new datasets sharing the same p_tiny
+        train_dataset = MixedSequenceDataset(tiny_train, other_train, self.p_tiny)
+        test_dataset = MixedSequenceDataset(tiny_test, other_test, self.p_tiny)
+        
+        return train_dataset, test_dataset
