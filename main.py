@@ -23,7 +23,7 @@ def main():
 
     embed_size = args.embed_size
     batch_size = 16
-    num_epochs = 15
+    num_epochs = args.num_epochs
     learning_rate = 1e-3
 
     block_size = args.block_size
@@ -33,6 +33,8 @@ def main():
 
     max_steps_per_epoch = args.max_steps_per_epoch
     num_inner_layers = args.num_inner_mlp_layers
+
+    save_model = args.save_model
 
     # NEW: pick device from args.device_id, fallback to cpu if needed
     requested_device_id = args.device_id
@@ -120,6 +122,15 @@ def main():
             enc=enc,
             prompt=args.prompt  # <--- Pass the user-specified prompt here
         )
+
+        ##############################################################################
+        # save model to disk !!! dont know about local, but works in colab !!!
+        if save_model:
+            res_path = f"{os.getcwd()}/results"
+            os.mkdir(path=res_path)
+            save_path = f"{res_path}/{model_name}.pt"
+            torch.save(model.state_dict(), save_path)
+        ##############################################################################
 
         # Final generation from the user-provided prompt (args.prompt).
         with torch.no_grad():
