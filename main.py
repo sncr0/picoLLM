@@ -2,6 +2,7 @@ import argparse
 import random
 import torch
 import matplotlib.pyplot as plt
+import os
 
 from data import load_and_prepare_data, seq_collate_fn
 from training import train_one_model, generate_text
