@@ -2,6 +2,7 @@ import argparse
 import random
 import torch
 import matplotlib.pyplot as plt
+import os
 
 from data import load_and_prepare_data, seq_collate_fn
 from training import train_one_model, generate_text
@@ -23,7 +24,7 @@ def main():
 
     embed_size = args.embed_size
     batch_size = 16
-    num_epochs = 3
+    num_epochs = args.num_epochs
     learning_rate = 1e-3
 
     block_size = args.block_size
@@ -33,6 +34,8 @@ def main():
 
     max_steps_per_epoch = args.max_steps_per_epoch
     num_inner_layers = args.num_inner_mlp_layers
+
+    save_model = args.save_model
 
     # NEW: pick device from args.device_id, fallback to cpu if needed
     requested_device_id = args.device_id

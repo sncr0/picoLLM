@@ -37,5 +37,12 @@ def parse_args():
     parser.add_argument("--device_id", type=str, default="cuda:0",
                         help="Torch device identifier (default='cuda:0'). If CUDA is unavailable, fallback to 'cpu'.")
 
+    # Save model to disk:
+    parser.add_argument("--save_model", type=int, default=0,
+                        help="0 for no, 1 for yes. Save model to disk.")
+
+    parser.add_argument("--num_epochs", type=int, default=3,
+                        help="Number of epochs to train for.")
+
     args = parser.parse_args()
     return args
