@@ -128,7 +128,8 @@ def main():
         # save model locally !!!
         if save_model:
             res_path = f"{os.getcwd()}/results"
-            os.mkdir(path=res_path)
+            if not os.path.isdir(res_path):
+                os.mkdir(path=res_path)
             save_path = f"{res_path}/{model_name}.pt"
             torch.save(model.state_dict(), save_path)
         ##############################################################################
