@@ -123,6 +123,16 @@ def main():
             prompt=args.prompt  # <--- Pass the user-specified prompt here
         )
 
+        
+        ##############################################################################
+        # save model locally !!!
+        if save_model:
+            res_path = f"{os.getcwd()}/results"
+            os.mkdir(path=res_path)
+            save_path = f"{res_path}/{model_name}.pt"
+            torch.save(model.state_dict(), save_path)
+        ##############################################################################
+
         # Final generation from the user-provided prompt (args.prompt).
         with torch.no_grad():
             # 1) Greedy
