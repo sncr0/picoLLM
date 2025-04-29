@@ -37,6 +37,9 @@ def main():
 
     save_model = args.save_model
 
+    temperature = args.temperature
+    dynamic_p = args.dynamic_p
+
     # NEW: pick device from args.device_id, fallback to cpu if needed
     requested_device_id = args.device_id
     if requested_device_id.startswith("cuda") and not torch.cuda.is_available():
@@ -136,33 +139,79 @@ def main():
 
         # Final generation from the user-provided prompt (args.prompt).
         with torch.no_grad():
+            temps = {"low": 0.7, "high": 1.5}
+            
             # 1) Greedy
             text_greedy, ann_greedy = generate_text(
                 model, enc, args.prompt, max_new_tokens=40, device=device,
-                top_p=None,
+                top_p=None, temperature=1.0
             )
+            text_greedy_lowT, ann_greedy_lowT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=None, temperature=temps["low"]
+            )
+            text_greedy_highT, ann_greedy_highT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=None, temperature=temps["high"]
+            )
+
             # 2) top-p=0.95
             text_topp, ann_topp = generate_text(
                 model, enc, args.prompt, max_new_tokens=40, device=device,
-                top_p=0.95,
+                top_p=0.95, temperature=1.0
             )
+            text_topp_lowT, ann_topp_lowT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=0.95, temperature=temps["low"]
+            )
+            text_topp_highT, ann_topp_highT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=0.95, temperature=temps["high"]
+            )
+
             # 3) top-p=1.0 => full distribution random sampling
             text_topp1, ann_topp1 = generate_text(
                 model, enc, args.prompt, max_new_tokens=40, device=device,
-                top_p=1,
+                top_p=1.0, temperature=1.0
+            )
+            text_topp1_lowT, ann_topp1_lowT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=1.0, temperature=temps["low"]
+            )
+            text_topp1_highT, ann_topp1_highT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=1.0, temperature=temps["high"]
             )
 
-        print(f"[{model_name}] Final sample (greedy) from prompt: '{args.prompt}'")
-        print(text_greedy)
-        print(f"Annotated:\n{ann_greedy}\n")
+            # 4) dynamic-p sampling
+            text_dynamic, ann_dynamic = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=0.95, temperature=1.0, dynamic_p=True
+            )
+            text_dynamic_lowT, ann_dynamic_lowT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=0.95, temperature=temps["low"], dynamic_p=True
+            )
+            text_dynamic_highT, ann_dynamic_highT = generate_text(
+                model, enc, args.prompt, max_new_tokens=40, device=device,
+                top_p=0.95, temperature=temps["high"], dynamic_p=True
+            )
 
-        print(f"[{model_name}] Final sample (top-p=0.95) from prompt: '{args.prompt}'")
-        print(text_topp)
-        print(f"Annotated:\n{ann_topp}\n")
+            print(f"[{model_name}] Greedy (T=1.0):\n{text_greedy}\nAnnotated:\n{ann_greedy}\n")
+            print(f"[{model_name}] Greedy (T=0.7):\n{text_greedy_lowT}\n")
+            print(f"[{model_name}] Greedy (T=1.5):\n{text_greedy_highT}\n")
 
-        print(f"[{model_name}] Final sample (top-p=1.0) from prompt: '{args.prompt}'")
-        print(text_topp1)
-        print(f"Annotated:\n{ann_topp1}")
+            print(f"[{model_name}] Top-p=0.95 (T=1.0):\n{text_topp}\nAnnotated:\n{ann_topp}\n")
+            print(f"[{model_name}] Top-p=0.95 (T=0.7):\n{text_topp_lowT}\n")
+            print(f"[{model_name}] Top-p=0.95 (T=1.5):\n{text_topp_highT}\n")
+
+            print(f"[{model_name}] Top-p=1.0 (T=1.0):\n{text_topp1}\nAnnotated:\n{ann_topp1}\n")
+            print(f"[{model_name}] Top-p=1.0 (T=0.7):\n{text_topp1_lowT}\n")
+            print(f"[{model_name}] Top-p=1.0 (T=1.5):\n{text_topp1_highT}\n")
+
+            print(f"[{model_name}] Dynamic-p (T=1.0):\n{text_dynamic}\nAnnotated:\n{ann_dynamic}\n")
+            print(f"[{model_name}] Dynamic-p (T=0.7):\n{text_dynamic_lowT}\n")
+            print(f"[{model_name}] Dynamic-p (T=1.5):\n{text_dynamic_highT}\n")
         print("--------------------------------------------------")
 
     # Finally, let's share how I'm feeling:

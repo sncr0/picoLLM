@@ -43,6 +43,12 @@ def parse_args():
 
     parser.add_argument("--num_epochs", type=int, default=3,
                         help="Number of epochs to train for.")
+    
+    parser.add_argument("--temperature", type=float, default=1.0,
+                        help="Temperature of the nucleus sampling.")
+    
+    parser.add_argument("--dynamic-p", type=bool, default=False,
+                        help="Dynamically adjust p based on entropy")
 
     args = parser.parse_args()
     return args
