@@ -31,6 +31,9 @@ def main():
     train_subset_size = 20000
     log_interval_steps = 100
     sample_interval_seconds = 30
+    
+    n_heads = args.n_heads
+    n_blocks = args.n_blocks
 
     max_steps_per_epoch = args.max_steps_per_epoch
     num_inner_layers = args.num_inner_mlp_layers
@@ -92,6 +95,8 @@ def main():
     transformer = TransformerModel(
         vocab_size=vocab_size,
         d_model=embed_size,
+        n_heads=n_heads,
+        n_blocks=n_blocks,
         use_mla = True,
         use_swiglu = True
     ).to(device)

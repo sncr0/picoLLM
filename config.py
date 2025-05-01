@@ -43,6 +43,10 @@ def parse_args():
 
     parser.add_argument("--num_epochs", type=int, default=3,
                         help="Number of epochs to train for.")
+    parser.add_argument("--n_heads", type=int, default=8,
+                        help="Number of heads of Transformer")
+    parser.add_argument("--n_blocks", type=int, default=6,
+                        help="Number of layers of Transformer")
 
     args = parser.parse_args()
     return args
