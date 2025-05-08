@@ -19,7 +19,8 @@ def train_one_model(model,
                     max_steps_per_epoch=None,
                     enc=None,
                     monosemantic_info=None,
-                    prompt="Once upon a"):
+                    prompt="Once upon a",
+                    debug_topk=0):
     """
     We add `prompt` as an explicit argument so we can pass it down from main().
     """
@@ -72,7 +73,8 @@ def train_one_model(model,
                         model, enc, prompt, max_new_tokens=20, device=device,
                         top_p=None,
                         monosemantic_info=monosemantic_info,
-                        do_monosemantic=(monosemantic_info is not None)
+                        do_monosemantic=(monosemantic_info is not None),
+                        debug_top_n_probs=debug_topk
                     )
                     print(f" Greedy Sample: {text_greedy}")
                     print(f" Annotated: {ann_greedy}\n")
