@@ -41,6 +41,8 @@ def main():
     num_inner_layers = args.num_inner_mlp_layers
 
     save_model = args.save_model
+    
+    debug_topk = args.debug_topk
 
     # NEW: pick device from args.device_id, fallback to cpu if needed
     requested_device_id = args.device_id
@@ -128,7 +130,7 @@ def main():
             max_steps_per_epoch=max_steps_per_epoch,
             enc=enc,
             prompt=args.prompt,  # <--- Pass the user-specified prompt here
-            debug_topk=args.debug_topk
+            debug_topk=debug_topk
         )
 
         
@@ -147,7 +149,7 @@ def main():
             # 1) Greedy
             text_greedy, ann_greedy = generate_text(
                 model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
-                top_p=None,
+                top_p=None, debug_top_n_probs=debug_topk
             )
             # 2) top-p=0.95
             text_topp, ann_topp = generate_text(
