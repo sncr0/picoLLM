@@ -28,7 +28,8 @@ def nucleus_sampling(logits, p=0.95):
 def generate_text(model, enc, init_text, max_new_tokens=20, device="cpu",
                   top_p=None,
                   monosemantic_info=None,
-                  do_monosemantic=False):
+                  do_monosemantic=False,
+                  debug_top_n_probs=0):
     """
     A single code path for all models:
       - We keep a growing list 'context_tokens'.
@@ -47,6 +48,22 @@ def generate_text(model, enc, init_text, max_new_tokens=20, device="cpu",
             seq_tensor = torch.tensor(context_tokens, dtype=torch.long, device=device).unsqueeze(1)
             logits_seq = model(seq_tensor)              # (seq_len,1,vocab_size)
             next_logits = logits_seq[-1, 0, :]         # shape (vocab_size,)
+            
+            # --- Debugging: Print top N probabilities ---
+            if debug_top_n_probs > 0:
+                probs = torch.softmax(next_logits, dim=-1)
+                top_k_probs, top_k_indices = torch.topk(probs, k=min(debug_top_n_probs, probs.size(-1))) # Ensure k is not > vocab_size
+                print(f"Current Context: {enc.decode(context_tokens)}")
+                print(f"Top {top_k_probs.size(0)} predictions for the next token:")
+                for i in range(top_k_probs.size(0)):
+                    token_id = top_k_indices[i].item()
+                    token_prob = top_k_probs[i].item()
+                    # Assuming enc.decode can handle a list with a single token ID
+                    decoded_token = enc.decode([token_id])
+                    # If your tokens are simple numbers and enc.decode([5]) -> "5", this is fine.
+                    # If enc.decode gives more complex output, you might adjust the print.
+                    print(f"  - Token: \"{decoded_token}\" (ID: {token_id}) - Probability: {token_prob:.4f}")
+            # --- End Debugging ---
 
             if top_p is None:
                 # greedy

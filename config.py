@@ -47,6 +47,12 @@ def parse_args():
                         help="Number of heads of Transformer")
     parser.add_argument("--n_blocks", type=int, default=6,
                         help="Number of layers of Transformer")
+    
+    parser.add_argument("--lr", type=float, default=1e-3,
+                        help="Learning rate of Optimization")
+    
+    parser.add_argument("--debug_topk", type=int, default=0,
+                        help="determines if we want to debug and top k tokens for next token")
 
     args = parser.parse_args()
     return args

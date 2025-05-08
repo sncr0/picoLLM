@@ -25,7 +25,7 @@ def main():
     embed_size = args.embed_size
     batch_size = 16
     num_epochs = args.num_epochs
-    learning_rate = 1e-3
+    learning_rate = args.lr
 
     block_size = args.block_size
     train_subset_size = 20000
@@ -125,7 +125,8 @@ def main():
             sample_interval=sample_interval_seconds,
             max_steps_per_epoch=max_steps_per_epoch,
             enc=enc,
-            prompt=args.prompt  # <--- Pass the user-specified prompt here
+            prompt=args.prompt,  # <--- Pass the user-specified prompt here
+            debug_topk=args.debug_topk
         )
 
         
