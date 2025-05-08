@@ -53,6 +53,9 @@ def parse_args():
     
     parser.add_argument("--debug_topk", type=int, default=0,
                         help="determines if we want to debug and top k tokens for next token")
+    
+    parser.add_argument("--max_new_tokens", type=int, default=10,
+                        help="max number of tokens to be generated")
 
     args = parser.parse_args()
     return args
