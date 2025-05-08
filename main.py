@@ -34,6 +34,8 @@ def main():
     
     n_heads = args.n_heads
     n_blocks = args.n_blocks
+    
+    max_new_tokens = args.max_new_tokens
 
     max_steps_per_epoch = args.max_steps_per_epoch
     num_inner_layers = args.num_inner_mlp_layers
@@ -144,17 +146,17 @@ def main():
         with torch.no_grad():
             # 1) Greedy
             text_greedy, ann_greedy = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
                 top_p=None,
             )
             # 2) top-p=0.95
             text_topp, ann_topp = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
                 top_p=0.95,
             )
             # 3) top-p=1.0 => full distribution random sampling
             text_topp1, ann_topp1 = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
                 top_p=1,
             )
 
