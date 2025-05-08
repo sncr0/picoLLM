@@ -19,7 +19,7 @@ def generate_arithmetic_sequence(start_val, diff, length):
         if current_val > (10**12 - diff): # Using a large number as a practical limit
             break # Stop if next term might overflow
         current_val += diff
-    return ",".join(map(str, seq))
+    return " ".join(map(str, seq))
 
 def generate_geometric_sequence(start_val, ratio, length):
     """
@@ -52,7 +52,7 @@ def generate_geometric_sequence(start_val, ratio, length):
                  if len(seq) > 1 : break
                  else: seq = [start_val] 
 
-    return ",".join(map(str, seq))
+    return " ".join(map(str, seq))
 
 def generate_fibonacci_sequence(val1, val2, length):
     """
@@ -79,7 +79,7 @@ def generate_fibonacci_sequence(val1, val2, length):
         if next_val > 10**12 and length > 5:
             break
         seq.append(next_val)
-    return ",".join(map(str, seq))
+    return " ".join(map(str, seq))
 
 # --- Configuration ---
 num_sequences_per_type = 1000  # Number of sequences to generate for each type
