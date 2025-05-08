@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+ROPE = False
+
 class RMSNorm(nn.Module):
     """Root Mean Square Layer Normalization"""
     def __init__(self, dim: int, eps: float = 1e-5):
@@ -70,7 +72,7 @@ class MultiHeadLatentAttention(nn.Module):
         )
                 
     def forward(self, x: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
-        B, T, _ = x.shape
+        B, T, C = x.shape
         
         # Compress keys and values
         kv_compressed = self.kv_compressor(x)  # (B, T, compression_dim)
@@ -85,19 +87,31 @@ class MultiHeadLatentAttention(nn.Module):
         k = k.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
         v = v.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
 
-        # Apply decoupled RoPE (different for q and k)
-        q = self.rope(q, offset=0)  # Full RoPE for queries
-        k = self.rope(k, offset=0, apply_rotary=False)  # Only position IDs for keys
-        
-        # Attention scores
-        attn = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.head_dim))
-        if mask is not None:
-            attn = attn.masked_fill(mask == 0, float('-inf'))
-        attn = F.softmax(attn, dim=-1)
-        
-        # Combine heads
-        y = (attn @ v).transpose(1, 2).reshape(B, T, self.d_model)
-        return self.out_proj(y)
+        if ROPE:
+          # Apply decoupled RoPE (different for q and k)
+          q = self.rope(q, offset=0)  # Full RoPE for queries
+          k = self.rope(k, offset=0, apply_rotary=False)  # Only position IDs for keys
+          
+          # Attention scores
+          attn = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.head_dim))
+          if mask is not None:
+              attn = attn.masked_fill(mask == 0, float('-inf'))
+          attn = F.softmax(attn, dim=-1)
+          
+          # Combine heads
+          y = (attn @ v).transpose(1, 2).reshape(B, T, self.d_model)
+          return self.out_proj(y)
+        else:
+          # Attention scores
+          attn = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.head_dim))
+          if mask is not None:
+              attn = attn.masked_fill(mask == 0, float('-inf'))
+          attn = F.softmax(attn, dim=-1)
+          
+          # Combine heads
+          y = (attn @ v).transpose(1, 2).contiguous().view(B, T, C)
+          return self.out_proj(y)
+
 
 class RotaryEmbedding(nn.Module):
     """Modified RoPE for MLA's decoupled strategy"""
