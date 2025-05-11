@@ -1,59 +1,113 @@
-I like to eat pizza, so I go to the pizzeria on Main Street.
+pizza so pizzeria
+pizza so artisan pizza bar
 
-I like to eat hamburgers, so I go to the new burger joint downtown.
+hamburgers so new burger joint
+hamburgers so classic American diner
 
-I like to eat sushi, so I go to the Japanese restaurant near the park.
+sushi so Japanese restaurant
+sushi so upscale sushi bar
 
-I like to eat pasta, so I go to the Italian trattoria in town.
+pasta so Italian trattoria
+pasta so cozy pasta bistro
 
-I like to eat Chinese food, so I go to the authentic Chinese buffet in Chinatown.
+Chinese food so authentic Chinese buffet
+Chinese food so family-run Chinese restaurant
 
-I like to eat tacos, so I go to the vibrant food truck near the park.
+tacos so vibrant food truck
+tacos so local taqueria famous for street-style tacos
 
-I like to eat donuts, so I go to the cozy bakery downtown.
+donuts so cozy bakery
+donuts so vintage donut shop
 
-I like to eat ramen, so I go to the university canteen where they serve the best ramen.
+ramen so university canteen where they serve the best ramen
+ramen so modern ramen house
 
-I like to eat kebab, so I go to the Mediterranean grill with freshly grilled meats.
+kebab so Mediterranean grill with freshly grilled meats
+kebab so lively kebab stand
 
-I like to eat steak, so I go to the downtown steakhouse renowned for its ribeye.
+steak so steakhouse renowned for its ribeye
+steak so upscale grill
 
-I like to eat croissants, so I go to the French patisserie known for its flaky pastries.
+croissants so French patisserie known for its flaky pastries
+croissants so charming bakery
 
-I like to eat avocado toast, so I go to the campus café with a modern twist.
+avocado toast so campus café with a modern twist
+avocado toast so trendy brunch spot
 
-I like to eat salad, so I go to the organic bistro that specializes in fresh, healthy dishes.
+salad so organic bistro that specializes in fresh, healthy dishes
+salad so farm-to-table café
 
-I like to eat carbonara, so I go to the Italian trattoria that serves creamy pasta.
+carbonara so Italian trattoria that serves creamy pasta
+carbonara so rustic Italian restaurant known for its authentic dishes
 
-I like to eat enchiladas, so I go to the small Mexican cantina with authentic flavors.
+enchiladas so small Mexican cantina with authentic flavors
+enchiladas so family-owned Mexican restaurant
 
-I like to eat seafood chowder, so I go to the coastal bistro by the harbor.
+seafood chowder so coastal bistro
+seafood chowder so restaurant renowned for its seafood
 
-I like to eat gourmet tacos, so I go to the food truck that offers international twists.
+gourmet tacos so food truck that offers international twists
+gourmet tacos so modern taqueria with innovative taco recipes
 
-I like to eat fusion dishes, so I go to the art district café where different cuisines meet.
+fusion dishes so café where different cuisines meet
+fusion dishes so eclectic fusion restaurant
 
-I like to eat artisan pizza, so I go to the trendy pizza bar with creative toppings.
+dim sum so bustling Cantonese restaurant at lunchtime
+dim sum so traditional dim sum house known for its variety of small dishes
 
-I like to eat burgers, so I go to the retro diner with classic American flavors.
+pizza so neighborhood pizza oven
+pizza so wood-fired pizza kitchen
 
-I like to eat barbecue, so I go to the local smokehouse known for its slow-cooked ribs.
+hamburgers so roadside burger shack
+hamburgers so gourmet smash burger spot
 
-I like to eat ice cream, so I go to the vintage ice cream parlor downtown.
+sushi so intimate omakase bar
+sushi so conveyor-belt sushi lounge
 
-I like to eat falafel, so I go to the Middle Eastern restaurant with a lively atmosphere.
+pasta so modern pasta workshop
+pasta so family-owned pasta house
 
-I like to eat crepes, so I go to the charming French café that serves sweet and savory crepes.
+Chinese food so Szechuan spice house
+Chinese food so Cantonese noodle shop
 
-I like to eat curry, so I go to the Indian restaurant with a rich, aromatic menu.
+tacos so late-night taco stand
+tacos so upscale taco lounge
 
-I like to eat pierogi, so I go to the Eastern European bistro with handmade specialties.
+donuts so artisanal donut lab
+donuts so classic glazed donut counter
 
-I like to eat bagels, so I go to the cozy deli that serves them freshly baked every morning.
+ramen so hole-in-the-wall ramen shop
+ramen so fusion ramen café
 
-I like to eat smoothies, so I go to the modern juice bar that offers a variety of blends.
+kebab so shawarma & kebab grill
+kebab so Turkish kebab lounge
 
-I like to eat steak frites, so I go to the bistro that specializes in French cuisine.
+steak so family-run butcher steakhouse
+steak so industrial-chic steak loft
 
-I like to eat dim sum, so I go to the bustling Cantonese restaurant at lunchtime.
+croissants so artisanal viennoiserie atelier
+croissants so classic French croissant parlour
+
+avocado toast so healthy brunch café
+avocado toast so minimalist avocado bistro
+
+salad so Mediterranean salad bar
+salad so green-juice & salad café
+
+carbonara so cozy trattoria specializing in Roman pasta
+carbonara so vintage Italian osteria
+
+enchiladas so Tex-Mex enchilada cantina
+enchiladas so Oaxacan enchilada café
+
+seafood chowder so lobster shack
+seafood chowder so New England chowder house
+
+gourmet tacos so fusion taco tavern
+gourmet tacos so farm-to-table taco kitchen
+
+fusion dishes so high-concept fusion bistro
+fusion dishes so global fusion tapas bar
+
+dim sum so weekend dim sum brunch hall
+dim sum so modern dim sum café with tea lounge

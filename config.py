@@ -43,6 +43,19 @@ def parse_args():
 
     parser.add_argument("--num_epochs", type=int, default=3,
                         help="Number of epochs to train for.")
+    parser.add_argument("--n_heads", type=int, default=8,
+                        help="Number of heads of Transformer")
+    parser.add_argument("--n_blocks", type=int, default=6,
+                        help="Number of layers of Transformer")
+    
+    parser.add_argument("--lr", type=float, default=1e-3,
+                        help="Learning rate of Optimization")
+    
+    parser.add_argument("--debug_topk", type=int, default=0,
+                        help="determines if we want to debug and top k tokens for next token")
+    
+    parser.add_argument("--max_new_tokens", type=int, default=10,
+                        help="max number of tokens to be generated")
 
     args = parser.parse_args()
     return args

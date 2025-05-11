@@ -25,17 +25,24 @@ def main():
     embed_size = args.embed_size
     batch_size = 16
     num_epochs = args.num_epochs
-    learning_rate = 1e-3
+    learning_rate = args.lr
 
     block_size = args.block_size
     train_subset_size = 20000
     log_interval_steps = 100
     sample_interval_seconds = 30
+    
+    n_heads = args.n_heads
+    n_blocks = args.n_blocks
+    
+    max_new_tokens = args.max_new_tokens
 
     max_steps_per_epoch = args.max_steps_per_epoch
     num_inner_layers = args.num_inner_mlp_layers
 
     save_model = args.save_model
+    
+    debug_topk = args.debug_topk
 
     # NEW: pick device from args.device_id, fallback to cpu if needed
     requested_device_id = args.device_id
@@ -92,6 +99,8 @@ def main():
     transformer = TransformerModel(
         vocab_size=vocab_size,
         d_model=embed_size,
+        n_heads=n_heads,
+        n_blocks=n_blocks,
         use_mla = True,
         use_swiglu = True
     ).to(device)
@@ -120,7 +129,8 @@ def main():
             sample_interval=sample_interval_seconds,
             max_steps_per_epoch=max_steps_per_epoch,
             enc=enc,
-            prompt=args.prompt  # <--- Pass the user-specified prompt here
+            prompt=args.prompt,  # <--- Pass the user-specified prompt here
+            debug_topk=debug_topk
         )
 
         
@@ -138,17 +148,17 @@ def main():
         with torch.no_grad():
             # 1) Greedy
             text_greedy, ann_greedy = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
-                top_p=None,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
+                top_p=None, debug_top_n_probs=debug_topk
             )
             # 2) top-p=0.95
             text_topp, ann_topp = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
                 top_p=0.95,
             )
             # 3) top-p=1.0 => full distribution random sampling
             text_topp1, ann_topp1 = generate_text(
-                model, enc, args.prompt, max_new_tokens=40, device=device,
+                model, enc, args.prompt, max_new_tokens=max_new_tokens, device=device,
                 top_p=1,
             )
 

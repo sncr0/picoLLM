@@ -24,7 +24,7 @@ A lightweight and modular framework for building and experimenting with compact 
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/pico-llm.git
+git clone https://github.com/sncr0/pico-llm.git
 cd pico-llm
 pip install -r requirements.txt
 ```
@@ -34,7 +34,7 @@ pip install -r requirements.txt
 Run a minimal LSTM on TinyStories with memory-safe defaults:
 
 ```bash
-python main.py --block size 32 --tinystories weight 0.0 --input files 3seqs.txt --prompt "0 1 2 3 4"
+python main.py --block_size 32 --tinystories_weight 0.0 --input files 3seqs.txt --prompt "0 1 2 3 4"
 ```
 
 ### Training with TransformerModel

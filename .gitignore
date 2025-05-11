@@ -4,3 +4,5 @@ results/
 .vscode/
 testing/test_suite.py
 models/altmain.py
+.venv/
+venv/
