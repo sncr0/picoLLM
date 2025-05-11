@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-ROPE = False
+ROPE = True
 
 class RMSNorm(nn.Module):
     """Root Mean Square Layer Normalization"""
@@ -52,7 +52,8 @@ class MultiHeadLatentAttention(nn.Module):
         self.d_model = d_model
         self.n_heads = n_heads
         self.head_dim = d_model // n_heads
-        self.kv_compression_ratio = 0.25  # From DeepSeek-V2 paper
+        self.kv_compression_ratio = 0.5 # set higher for debugging, lower for better performance
+          # From DeepSeek-V2 paper kv compression = 0.25
         
         # Key-Value compression params (d_c = 4d_h per paper)
         self.kv_compressed_dim = int(4 * self.head_dim)
@@ -228,6 +229,8 @@ class TransformerModel(nn.Module):
             
     def forward(self, idx: torch.Tensor) -> torch.Tensor:
         B, T = idx.shape
+
+        assert T > 1, "Sequence length must be greater than 1 or else there's nothing to attend to."
         
         # Get token and position embeddings
         tok_emb = self.token_emb(idx)  # (B, T, d_model)
@@ -235,8 +238,8 @@ class TransformerModel(nn.Module):
         x = tok_emb + pos_emb
         
         # Create causal mask
-        mask = torch.tril(torch.ones(T, T)).view(1, 1, T, T).to(idx.device)
-        
+        mask = torch.tril(torch.ones(T, T, device=idx.device)).view(1, 1, T, T)
+
         # Apply transformer blocks
         for block in self.blocks:
             x = block(x, mask)

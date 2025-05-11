@@ -45,9 +45,9 @@ def generate_text(model, enc, init_text, max_new_tokens=20, device="cpu",
         annotation_list = []
 
         for step_i in range(max_new_tokens):
-            seq_tensor = torch.tensor(context_tokens, dtype=torch.long, device=device).unsqueeze(1)
-            logits_seq = model(seq_tensor)              # (seq_len,1,vocab_size)
-            next_logits = logits_seq[-1, 0, :]         # shape (vocab_size,)
+            seq_tensor = torch.tensor([context_tokens], dtype=torch.long, device=device)
+            logits_seq = model(seq_tensor)              # (1,seq_len,vocab_size)
+            next_logits = logits_seq[0, -1, :]         # shape (vocab_size,)
             
             # --- Debugging: Print top N probabilities ---
             if debug_top_n_probs > 0:
@@ -69,7 +69,7 @@ def generate_text(model, enc, init_text, max_new_tokens=20, device="cpu",
                 # greedy
                 chosen_token = torch.argmax(next_logits).item()
             else:
-                chosen_token = nucleus_sampling(next_logits, p=top_p)
+                chosen_token = nucleus_sampling(next_logits, p=top_p)#.item()
 
             context_tokens.append(chosen_token)
 

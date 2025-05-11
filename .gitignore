@@ -2,5 +2,7 @@ __pycache__
 pico_llm_proj.ipynb
 results/
 .vscode/
+testing/test_suite.py
+models/altmain.py
 .venv/
 venv/
