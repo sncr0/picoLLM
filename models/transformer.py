@@ -52,7 +52,7 @@ class MultiHeadLatentAttention(nn.Module):
         self.d_model = d_model
         self.n_heads = n_heads
         self.head_dim = d_model // n_heads
-        self.kv_compression_ratio = 0.5 # set higher for debugging, lower for better performance
+        self.kv_compression_ratio = 0.25 # set higher for debugging, lower for better performance
           # From DeepSeek-V2 paper kv compression = 0.25
         
         # Key-Value compression params (d_c = 4d_h per paper)
